@@ -1,0 +1,56 @@
+version: '3.8'
+
+name: apollo
+services:
+
+  frontend:
+    container_name: frontend
+    image: node:18
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "4200:4200"
+    networks:
+      - apollo_net
+    working_dir: /app
+    command: ["npx", "ng", "serve", "--host", "0.0.0.0", "--disable-host-check"]
+
+  gateway:
+    container_name: gateway
+    image: python:3.9
+    volumes:
+      - ./gateway:/gateway
+    ports:
+      - "8000:8000"
+    networks:
+      - apollo_net
+    working_dir: /gateway
+    command: ["tail", "-f", "/dev/null"]
+
+  nlp:
+    container_name: nlp
+    image: python:3.9
+    volumes:
+      - ./nlp:/nlp
+    ports:
+      - "8001:8001"
+    networks:
+      - apollo_net
+    working_dir: /nlp
+    command: ["tail", "-f", "/dev/null"]
+
+  dialog:
+    container_name: dialog
+    image: python:3.9
+    volumes:
+      - ./dialog:/dialog
+    ports:
+      - "8002:8002"
+    networks:
+      - apollo_net
+    working_dir: /dialog
+    command: ["tail", "-f", "/dev/null"]
+
+networks:
+  apollo_net:
+    driver: bridge
